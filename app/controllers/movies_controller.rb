@@ -14,24 +14,37 @@ class MoviesController < ApplicationController
     # for rating filtering
     @all_ratings = Movie.select(:rating).all.uniq
     
-    
-    @filtered_ratings = params[:ratings] ? params[:ratings].keys : @all_ratings
-    
-    # sort by title and releaes_date
-    if (params[:sort] == "title")
-      @movies = Movie.order(:title).all
-    elsif (params[:sort] == "release_date")
-      @movies = Movie.order(:release_date).all
-    elsif (params[:sort] == nil and params[:ratings])
-      check_box = params[:ratings].collect{|id| id}
+    session[:sort] = params[:sort] if params[:sort]
+    session[:ratings] = params[:ratings] if params[:ratings]
+ 
+    if (session[:sort] == "title")
+      sortby = :title
+    elsif (session[:sort] = "release_date")
+      sortby = :release_date
+    end
+
+    if (params[:sort] and !session[:ratings])
+      @movies = Movie.all.order(sortby)
+    elsif (params[:sort] and session[:ratings])
+      check_box = session[:ratings].collect{|id| id}
+      mark = []
+      check_box.each do |i|
+        mark << i[0]
+      end
+      @movies = Movie.where(:rating => mark).order(sortby)
+    elsif (!params[:sort] and params[:ratings])
+      check_box = session[:ratings].collect{|id| id}
       mark = []
       check_box.each do |i|
         mark << i[0]
       end
       @movies = Movie.where(:rating => mark)
-    else
+    elsif (!session[:sort] and !session[:rating])
       @movies = Movie.all
+    elsif session[:ratings] != params[:ratings] || session[:sort] != params[:sort]
+      redirect_to movies_path(ratings: session[:ratings], sort: session[:sort])
     end
+      
   end
 
   def new

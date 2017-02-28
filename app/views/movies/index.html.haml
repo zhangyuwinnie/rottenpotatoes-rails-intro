@@ -5,7 +5,7 @@
   Include:
   - @all_ratings.each do |r|
     = r.rating
-    = check_box_tag "ratings[#{r.rating}]", r, @filtered_ratings.find_index(r)
+    = check_box_tag "ratings[#{r.rating}]"
 
   = submit_tag 'Refresh', id: 'ratings_submit'
 
