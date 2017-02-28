@@ -11,15 +11,23 @@ class MoviesController < ApplicationController
   end
 
   def index
+    # for rating filtering
     @all_ratings = Movie.select(:rating).all.uniq
-    @movies = Movie.all
+    
     
     # sort by title and releaes_date
     if (params[:sort] == "title")
       @movies = Movie.order(:title).all
     elsif (params[:sort] == "release_date")
       @movies = Movie.order(:release_date).all
-    elsif (params[:sort] == nil)
+    elsif (params[:sort] == nil and params[:ratings])
+      check_box = params[:ratings].collect{|id| id}
+      mark = []
+      check_box.each do |i|
+        mark << i[0]
+      end
+      @movies = Movie.where(:rating => mark)
+    else
       @movies = Movie.all
     end
   end
