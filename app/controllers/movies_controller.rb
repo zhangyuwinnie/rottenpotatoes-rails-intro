@@ -15,6 +15,8 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.select(:rating).all.uniq
     
     
+    @filtered_ratings = params[:ratings] ? params[:ratings].keys : @all_ratings
+    
     # sort by title and releaes_date
     if (params[:sort] == "title")
       @movies = Movie.order(:title).all
