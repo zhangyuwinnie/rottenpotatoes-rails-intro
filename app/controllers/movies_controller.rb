@@ -11,6 +11,7 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.select(:rating).all.uniq
     @movies = Movie.all
     
     # sort by title and releaes_date
