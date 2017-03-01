@@ -16,6 +16,17 @@ class MoviesController < ApplicationController
     
     session[:sort] = params[:sort] if params[:sort]
     session[:ratings] = params[:ratings] if params[:ratings]
+    
+    
+    
+    if (session[:ratings])
+      @checked_ratings = session[:ratings]
+    else
+      @checked_ratings = ["G","R","PG-13","PG"]
+    end
+    
+    # @filtered_ratings = (session[:ratings].present? ? session[:ratings] : [])
+    # @selected_ratings = (params[:ratings].present? ?: [])
  
     if (session[:sort] == "title")
       sortby = :title
